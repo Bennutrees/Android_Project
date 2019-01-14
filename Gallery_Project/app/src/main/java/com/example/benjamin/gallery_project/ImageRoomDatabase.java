@@ -1,4 +1,4 @@
-package com.example.benjamin.roomwordsample;
+package com.example.benjamin.gallery_project;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;

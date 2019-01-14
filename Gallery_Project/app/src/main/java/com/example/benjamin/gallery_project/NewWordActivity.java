@@ -1,4 +1,4 @@
-package com.example.benjamin.roomwordsample;
+package com.example.benjamin.gallery_project;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

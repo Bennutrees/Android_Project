@@ -1,4 +1,4 @@
-package com.example.benjamin.roomwordsample;
+package com.example.benjamin.gallery_project;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;

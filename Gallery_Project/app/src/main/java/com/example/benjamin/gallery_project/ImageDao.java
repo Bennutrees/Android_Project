@@ -1,4 +1,4 @@
-package com.example.benjamin.roomwordsample;
+package com.example.benjamin.gallery_project;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -13,9 +13,9 @@ public interface ImageDao {
     @Insert//(onConflict = OnConflictStrategy.REPLACE)
     void insert(Image image);
 
-    @Query("DELETE FROM Image")
+    @Query("DELETE FROM images_table")
     void deleteAll();
 
-    @Query("SELECT * from Image ORDER BY word ASC")
+    @Query("SELECT * from images_table ORDER BY image ASC")
     LiveData<List<Image>> getAllImages();
 }

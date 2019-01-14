@@ -1,4 +1,4 @@
-package com.example.benjamin.roomwordsample;
+package com.example.benjamin.gallery_project;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -40,7 +40,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
             imageViewHolder.imageItemView.setText(current.getImage());
         } else {
             // Covers the case of data not being ready yet.
-            imageViewHolder.imageItemView.setText("No com.example.benjamin.roomwordsample.Image");
+            imageViewHolder.imageItemView.setText("No Image");
         }
     }
 
