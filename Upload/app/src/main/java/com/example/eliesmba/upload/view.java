@@ -1,21 +1,39 @@
 package com.example.eliesmba.upload;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class view extends AppCompatActivity implements View.OnClickListener {
-    Button upB, downB;
-    EditText upT, downT;
-    ImageView upIm, downIm;
+    Button upB, next;
+    ImageView upIm;
+
 
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,38 +41,27 @@ public class view extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_view);
 
         upB = (Button) findViewById(R.id.buttonUpload);
-        downB = (Button) findViewById(R.id.buttonUpload);
-
-        upT = (EditText) findViewById(R.id.uploadTitle);
-        downT = (EditText) findViewById(R.id.downloadTitle);
 
         upIm = (ImageView) findViewById(R.id.imageUpload);
-        downIm = (ImageView) findViewById(R.id.imageDownload);
 
+        next = (Button) findViewById(R.id.buttonNext);
+        next.setVisibility(View.GONE);
 
-        // l'image à upload lorsqu'on clique dessus
-
-        upIm.setOnClickListener(this);
-
-        // Le bouton d'upload
+        // Le bouton d'upload d'image
 
         upB.setOnClickListener(this);
+        next.setOnClickListener(this);
 
-        // Le bouton de download
-
-        downB.setOnClickListener(this);
     }
 
     public void onClick(View v){
-        if(v.getId() == upIm.getId()){
-
-        }
-
-        // Si le bouton upload est cliqué
-
-        else if(v.getId() == upB.getId()){
+        if(v.getId() == upB.getId()){
             Intent gallerieIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(gallerieIntent, RESULT_LOAD_IMAGE);
+        }
+        if(v.getId() == next.getId()){
+            Intent i = new Intent(view.this, Contacts.class);
+            startActivity(i);
         }
     }
 
@@ -67,6 +74,8 @@ public class view extends AppCompatActivity implements View.OnClickListener {
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
             Uri selectedImage = data.getData();
             upIm.setImageURI(selectedImage);
+            next.setVisibility(View.VISIBLE);
         }
     }
+
 }

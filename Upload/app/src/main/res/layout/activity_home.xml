@@ -8,24 +8,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageUpload"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="300dp"
-            android:layout_height="300dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:text="Home"
+            android:textAlignment="center" />
 
         <Button
-            android:id="@+id/buttonUpload"
-            android:text="Upload"
+            android:id="@+id/create"
+            android:text="Create an element"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/buttonNext"
-            android:text="Next Step"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
 
     </LinearLayout>
 
