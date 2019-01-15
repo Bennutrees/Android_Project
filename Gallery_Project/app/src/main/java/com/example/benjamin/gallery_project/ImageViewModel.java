@@ -3,11 +3,13 @@ package com.example.benjamin.gallery_project;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+
 import java.util.List;
 
 public class ImageViewModel extends AndroidViewModel {
 
     private ImageRepository mRepository;
+
     private LiveData<List<Image>> mAllImages;
 
     public ImageViewModel(Application application) {

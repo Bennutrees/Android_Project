@@ -1,25 +1,39 @@
 package com.example.benjamin.gallery_project;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.arch.persistence.room.ColumnInfo;
+import android.net.Uri;
+import android.support.annotation.Nullable;
+
+import java.util.Date;
 
 @Entity(tableName = "images_table")
-
 public class Image {
 
-    @PrimaryKey
-    @NonNull
-    @ColumnInfo(name = "image")
-    private Drawable mImage;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
-    public Image(@NonNull Drawable image) {
-        this.mImage = image;
+    @NonNull
+    @ColumnInfo(name = "Uri")
+    private Uri mUri;
+
+    @Nullable
+    @ColumnInfo(name = "Contacts")
+    private String[] mContacts;
+
+    /*@Nullable
+    @ColumnInfo(name = "Event")
+    private long mTime;*/
+
+    public Image(Uri uri, String[] contacts) {//, long time) {
+        this.mUri = uri;
+        this.mContacts = contacts;
+        //this.mTime = time;
     }
 
-    public Drawable getImage() {
-        return this.mImage;
+    public Uri getImage() {
+        return this.mUri;
     }
 }

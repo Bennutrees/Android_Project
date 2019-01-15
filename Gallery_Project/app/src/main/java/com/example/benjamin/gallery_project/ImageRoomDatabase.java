@@ -20,8 +20,8 @@ public abstract class ImageRoomDatabase extends RoomDatabase {
             synchronized (ImageRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            ImageRoomDatabase.class, "images_database")
-                            .addCallback(sRoomDatabaseCallback)
+                            ImageRoomDatabase.class, "image_database")
+                            //.addCallback(sRoomDatabaseCallback)
                             .build();
                 }
             }
@@ -29,31 +29,33 @@ public abstract class ImageRoomDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+
+
+    // To delete all content and repopulate the database whenever the app is started
     private static RoomDatabase.Callback sRoomDatabaseCallback =
         new RoomDatabase.Callback() {
 
         @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
+        public void onOpen (@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            new PopulateDbAsync(INSTANCE).execute();
+            new DepopulateDbAsync(INSTANCE).execute();
         }
     };
 
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+    // AsyncTask that deletes the contents of the database
+    private static class DepopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final ImageDao mDao;
 
-        PopulateDbAsync(ImageRoomDatabase db) {
+        DepopulateDbAsync(ImageRoomDatabase db) {
             mDao = db.imageDao();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            mDao.deleteAll();;
-            Image image = new Image("Hello");
-            mDao.insert(image);
-            image = new Image("World");
-            mDao.insert(image);
+            mDao.deletAll();
+            //Image image = new Image(...);
+            //mDao.insert(image);
             return null;
         }
     }

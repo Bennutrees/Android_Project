@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewWordActivity.class);
-                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
+                Intent intent = new Intent(MainActivity.this, UploadImageActivity.class);
+                startActivityForResult(intent, UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
 
@@ -44,12 +44,22 @@ public class MainActivity extends AppCompatActivity {
 
         mImageViewModel = ViewModelProviders.of(this).get(ImageViewModel.class);
         mImageViewModel.getAllImages().observe(this, new Observer<List<Image>>() {
-           @Override
-           public void onChanged(@Nullable final List<Image> images) {
-               // Update the cached copy of the images in the adapter.
-               adapter.setImages(images);
-           }
+            @Override
+            public void onChanged(@Nullable List<Image> images) {
+                // Update the cached copy of the words in the adapter
+                adapter.setImages(images);
+            }
         });
+    }
+
+    public static final int UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE = 1;
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE && requestCode == RESULT_OK) {
+            Image image = new Image(data.getData(), null);
+        }
     }
 
     @Override
@@ -72,21 +82,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Image image = new Image(data.getStringExtra(NewWordActivity.EXTRA_REPLY));
-            mImageViewModel.insert(image);
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
-        }
     }
 }

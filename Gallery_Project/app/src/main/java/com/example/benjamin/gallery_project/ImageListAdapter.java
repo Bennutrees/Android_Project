@@ -1,27 +1,29 @@
 package com.example.benjamin.gallery_project;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.util.List;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ImageViewHolder> {
 
     class ImageViewHolder extends RecyclerView.ViewHolder {
-        private final TextView imageItemView;
+
+        private final ImageView imageItemView;
 
         private ImageViewHolder(View itemView) {
             super(itemView);
-            imageItemView = itemView.findViewById(R.id.textView);
+            imageItemView = itemView.findViewById(R.id.imageView);
         }
     }
 
     private final LayoutInflater mInflater;
-    private List<Image> mImages;
+    private List<Image> mImages; // Cached copy of images
 
     ImageListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -34,13 +36,17 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
     }
 
     @Override
-    public void onBindViewHolder(ImageViewHolder imageViewHolder, int position) {
+    public void onBindViewHolder(ImageViewHolder holder, int position) {
         if (mImages != null) {
             Image current = mImages.get(position);
-            imageViewHolder.imageItemView.setText(current.getImage());
+            holder.imageItemView.setImageBitmap(new Bitmap(current.getImage()));
+
+            // TODO casting image Uri to bitmap;
+
         } else {
-            // Covers the case of data not being ready yet.
-            imageViewHolder.imageItemView.setText("No Image");
+
+            // TODO in case data not being ready yet
+
         }
     }
 
@@ -49,8 +55,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
         notifyDataSetChanged();
     }
 
-    // getItemCount() is called many times, and when it is first called,
-    // mImages has not been updated (means initially, it's null, and we can't return null).
+
+
     @Override
     public int getItemCount() {
         if (mImages != null)

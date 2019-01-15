@@ -21,7 +21,7 @@ public class ImageRepository {
         return mAllImages;
     }
 
-    public void insert(Image image) {
+    public void insert (Image image) {
         new insertAsyncTask(mImageDao).execute(image);
     }
 
@@ -34,7 +34,7 @@ public class ImageRepository {
         }
 
         @Override
-        protected Void doInBackground(final Image... params) {
+        protected  Void doInBackground(final Image... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }

@@ -10,12 +10,12 @@ import java.util.List;
 @Dao
 public interface ImageDao {
 
-    @Insert//(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void insert(Image image);
 
     @Query("DELETE FROM images_table")
-    void deleteAll();
+    void deletAll();
 
-    @Query("SELECT * from images_table ORDER BY image ASC")
+    @Query("SELECT * FROM images_table --ORDER by mTime ASC")
     LiveData<List<Image>> getAllImages();
 }
