@@ -4,11 +4,22 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-@Database(entities = {Image.class}, version = 1)
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+@Database(entities = {Image.class}, version = 1, exportSchema = false)
+@TypeConverters({ImageRoomDatabase.Converters.class})
 public abstract class ImageRoomDatabase extends RoomDatabase {
 
     public abstract ImageDao imageDao();
@@ -27,6 +38,32 @@ public abstract class ImageRoomDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
+    }
+
+    // Converters to store into database
+    public static class Converters {
+        @TypeConverter
+        public static Uri uriFromString(String value) {
+            Type type = new TypeToken<List<Uri>>() {}.getType();
+            return new Gson().fromJson(value, type);
+        }
+        @TypeConverter
+        public static String fromUri(Uri uri) {
+            Gson gson = new Gson();
+            String json = gson.toJson(uri);
+            return json;
+        }
+        @TypeConverter
+        public static String[] arrayFromString(String value) {
+            Type type = new TypeToken<List<String[]>>() {}.getType();
+            return new Gson().fromJson(value, type);
+        }
+        @TypeConverter
+        public static String fromStringArray(String[] stringArray) {
+            Gson gson = new Gson();
+            String json = gson.toJson(stringArray);
+            return json;
+        }
     }
 
 

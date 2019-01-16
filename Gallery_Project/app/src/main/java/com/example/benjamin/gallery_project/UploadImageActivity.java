@@ -11,22 +11,19 @@ import android.widget.ImageView;
 
 public class UploadImageActivity extends AppCompatActivity {
 
-    private final Button upload;
-    private final ImageView uploadedImage;
+    private Button upload;
+    private ImageView uploadedImage;
     private static final int RESULT_LOAD_IMAGE = 1;
-
-    public UploadImageActivity() {
-        this.uploadedImage = findViewById(R.id.uploaded_image);
-        this.upload = findViewById(R.id.upload_button);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
+        uploadedImage = findViewById(R.id.uploaded_image);
         uploadedImage.setVisibility(View.GONE);
 
+        upload = findViewById(R.id.upload_button);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,9 +43,9 @@ public class UploadImageActivity extends AppCompatActivity {
             Uri selectedImage = data.getData();
             uploadedImage.setVisibility(View.VISIBLE);
             uploadedImage.setImageURI(selectedImage);
-            setResult(RESULT_OK);
+            //setResult(RESULT_OK);
         }
-        finish();
+        //finish();
     }
 
     /*@Override

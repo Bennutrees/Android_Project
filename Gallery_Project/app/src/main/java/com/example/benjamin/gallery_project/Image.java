@@ -12,9 +12,9 @@ import java.util.Date;
 @Entity(tableName = "images_table")
 public class Image {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey/*(autoGenerate = true)
     private int id;
-
+    */
     @NonNull
     @ColumnInfo(name = "Uri")
     private Uri mUri;
@@ -33,7 +33,17 @@ public class Image {
         //this.mTime = time;
     }
 
-    public Uri getImage() {
-        return this.mUri;
-    }
+    //public int getId() { return this.id; }
+    //public void setId(int id) { this.id = id; }
+
+    @NonNull
+    public Uri getUri() { return mUri; }
+
+    public void setUri(@NonNull Uri mUri) { this.mUri = mUri; }
+
+    @Nullable
+    public String[] getContacts() { return mContacts; }
+
+    public void setContacts(@Nullable String[] mContacts) { this.mContacts = mContacts; }
+
 }

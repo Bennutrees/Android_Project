@@ -39,10 +39,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         if (mImages != null) {
             Image current = mImages.get(position);
-            holder.imageItemView.setImageBitmap(new Bitmap(current.getImage()));
-
-            // TODO casting image Uri to bitmap;
-
+            holder.imageItemView.setImageURI(current.getUri());
         } else {
 
             // TODO in case data not being ready yet

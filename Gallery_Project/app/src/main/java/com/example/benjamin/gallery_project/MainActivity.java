@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE && requestCode == RESULT_OK) {
             Image image = new Image(data.getData(), null);
         }
