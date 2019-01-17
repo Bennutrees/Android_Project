@@ -78,7 +78,8 @@ public class UploadImageActivity extends AppCompatActivity {
         eventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(UploadImageActivity.this, SelectEventActivity.class);
+                startActivity(i);
                 // TODO link SelectEventActivity
 
             }
@@ -131,7 +132,6 @@ public class UploadImageActivity extends AppCompatActivity {
         });
 
         cancelButton = findViewById(R.id.cancel_upload_button);
-        saveButton.setVisibility(View.GONE);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,6 +172,6 @@ public class UploadImageActivity extends AppCompatActivity {
         elementTags.setVisibility(View.VISIBLE);
         elementsButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.VISIBLE);
-        cancelButton.setVisibility(View.VISIBLE);
+        //layout_constraintHorizontal_bias="0.703"
     }
 }
