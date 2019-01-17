@@ -12,24 +12,147 @@
         android:layout_width="220dp"
         android:layout_height="220dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/upload_button"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/upload_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Upload"
+        app:layout_constraintEnd_toStartOf="@+id/take_photo_button"
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/take_photo_button" />
+
+    <Button
+        android:id="@+id/take_photo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Upload"
+        android:text="Take Pic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.703"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
+        app:layout_constraintTop_toBottomOf="@+id/uploaded_image"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <TextView
+        android:id="@+id/contact_tags"
+        android:layout_width="229dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/contacts_button"
+        app:layout_constraintEnd_toStartOf="@+id/contacts_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contacts_button" />
+
+    <Button
+        android:id="@+id/contacts_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Tag Contacts"
+        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uploaded_image"
+        app:layout_constraintVertical_bias="0.122" />
+
+
+
+    <TextView
+        android:id="@+id/event_tag"
+        android:layout_width="229dp"
+        android:layout_height="36dp"
+        app:layout_constraintBottom_toBottomOf="@+id/event_button"
+        app:layout_constraintEnd_toEndOf="@+id/contact_tags"
+        app:layout_constraintStart_toStartOf="@+id/contact_tags"
+        app:layout_constraintTop_toTopOf="@+id/event_button" />
+
+    <Button
+        android:id="@+id/event_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tag Event"
+        app:layout_constraintEnd_toEndOf="@+id/contacts_button"
+        app:layout_constraintTop_toBottomOf="@+id/contacts_button" />
+
+
+
+    <TextView
+        android:id="@+id/place_tags"
+        android:layout_width="229dp"
+        android:layout_height="36dp"
+        app:layout_constraintBottom_toBottomOf="@+id/place_button"
+        app:layout_constraintEnd_toEndOf="@+id/event_tag"
+        app:layout_constraintStart_toStartOf="@+id/event_tag"
+        app:layout_constraintTop_toTopOf="@+id/place_button" />
+
+    <Button
+        android:id="@+id/place_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tag Place"
+        app:layout_constraintEnd_toEndOf="@+id/event_button"
+        app:layout_constraintTop_toBottomOf="@+id/event_button" />
+
+
+
+    <TextView
+        android:id="@+id/element_tags"
+        android:layout_width="229dp"
+        android:layout_height="36dp"
+        app:layout_constraintBottom_toBottomOf="@+id/elements_button"
+        app:layout_constraintEnd_toEndOf="@+id/place_tags"
+        app:layout_constraintStart_toStartOf="@+id/place_tags"
+        app:layout_constraintTop_toTopOf="@+id/elements_button" />
+
+    <Button
+        android:id="@+id/elements_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tag Elements"
+        app:layout_constraintEnd_toEndOf="@+id/place_button"
+        app:layout_constraintTop_toBottomOf="@+id/place_button" />
+
+
+
+    <Button
+        android:id="@+id/save_upload_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Save"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_upload_button"
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cancel_upload_button" />
+
+    <Button
+        android:id="@+id/cancel_upload_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.703"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>

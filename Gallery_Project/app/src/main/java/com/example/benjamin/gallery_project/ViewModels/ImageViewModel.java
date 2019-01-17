@@ -1,8 +1,11 @@
-package com.example.benjamin.gallery_project;
+package com.example.benjamin.gallery_project.ViewModels;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+
+import com.example.benjamin.gallery_project.Database.Image;
+import com.example.benjamin.gallery_project.Database.ImageRepository;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class ImageViewModel extends AndroidViewModel {
         mAllImages = mRepository.getAllImages();
     }
 
-    LiveData<List<Image>> getAllImages() {
+    public LiveData<List<Image>> getAllImages() {
         return mAllImages;
     }
 

@@ -1,4 +1,4 @@
-package com.example.benjamin.gallery_project;
+package com.example.benjamin.gallery_project.Database;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
@@ -11,13 +11,13 @@ public class ImageRepository {
     private ImageDao mImageDao;
     private LiveData<List<Image>> mAllImages;
 
-    ImageRepository(Application application) {
+    public ImageRepository(Application application) {
         ImageRoomDatabase db = ImageRoomDatabase.getDatabase(application);
         mImageDao = db.imageDao();
         mAllImages = mImageDao.getAllImages();
     }
 
-    LiveData<List<Image>> getAllImages() {
+    public LiveData<List<Image>> getAllImages() {
         return mAllImages;
     }
 

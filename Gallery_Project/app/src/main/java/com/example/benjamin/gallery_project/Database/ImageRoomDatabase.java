@@ -1,4 +1,4 @@
-package com.example.benjamin.gallery_project;
+package com.example.benjamin.gallery_project.Database;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 @Database(entities = {Image.class}, version = 1, exportSchema = false)

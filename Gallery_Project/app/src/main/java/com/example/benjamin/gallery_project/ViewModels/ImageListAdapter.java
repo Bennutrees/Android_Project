@@ -1,12 +1,14 @@
-package com.example.benjamin.gallery_project;
+package com.example.benjamin.gallery_project.ViewModels;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.example.benjamin.gallery_project.Database.Image;
+import com.example.benjamin.gallery_project.R;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
     private final LayoutInflater mInflater;
     private List<Image> mImages; // Cached copy of images
 
-    ImageListAdapter(Context context) {
+    public ImageListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
@@ -47,7 +49,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
         }
     }
 
-    void setImages(List<Image> images) {
+    public void setImages(List<Image> images) {
         mImages = images;
         notifyDataSetChanged();
     }

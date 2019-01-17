@@ -1,4 +1,4 @@
-package com.example.benjamin.gallery_project;
+package com.example.benjamin.gallery_project.Database;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -20,7 +20,7 @@ public class Image {
     private Uri mUri;
 
     @Nullable
-    @ColumnInfo(name = "Contacts")
+    @ColumnInfo(name = "SelectContactsActivity")
     private String[] mContacts;
 
     /*@Nullable

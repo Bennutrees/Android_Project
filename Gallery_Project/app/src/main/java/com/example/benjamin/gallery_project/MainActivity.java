@@ -2,11 +2,11 @@ package com.example.benjamin.gallery_project;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.benjamin.gallery_project.Database.Image;
+import com.example.benjamin.gallery_project.ViewModels.ImageListAdapter;
+import com.example.benjamin.gallery_project.ViewModels.ImageViewModel;
 
 import java.util.List;
 
@@ -58,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE && requestCode == RESULT_OK) {
             Image image = new Image(data.getData(), null);
+            mImageViewModel.insert(image);
+
+            // TODO change data.getData() and gather the other stuff
         }
     }
 

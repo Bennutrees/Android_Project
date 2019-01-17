@@ -1,4 +1,4 @@
-package com.example.benjamin.gallery_project;
+package com.example.benjamin.gallery_project.Database;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
