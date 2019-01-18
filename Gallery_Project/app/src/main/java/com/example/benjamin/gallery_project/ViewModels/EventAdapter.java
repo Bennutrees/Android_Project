@@ -5,11 +5,15 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,11 +23,22 @@ import com.example.benjamin.gallery_project.R;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+import androidx.recyclerview.selection.ItemDetailsLookup;
+import androidx.recyclerview.selection.SelectionTracker;
+
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
 
-    static class  EventViewHolder extends RecyclerView.ViewHolder {
+    private int selected_position = -1;
 
+    private String stringEvent;
+
+    private SelectionTracker selectionTracker;
+
+    final class  EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
+
+        long id;
+        int position;
         private final TextView title;
         private final TextView begin;
         private final TextView end;
@@ -33,6 +48,52 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             title = itemView.findViewById(R.id.event_title);
             begin = itemView.findViewById(R.id.event_begin);
             end = itemView.findViewById(R.id.event_end);
+            //itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
+            notifyItemChanged(selected_position);
+            selected_position = getAdapterPosition();
+            notifyItemChanged(selected_position);
+        }
+
+        public ItemDetailsLookup.ItemDetails getDetails() {
+            Log.d("getDetails","details...");
+            return new ItemDetailsLookup.ItemDetails() {
+
+                @Override
+                public int getPosition() {
+                    return position;
+                }
+
+                @Nullable
+                @Override
+                public Object getSelectionKey() {
+                    return id;
+                }
+            };
+        }
+    }
+
+    public static final class EventDetailsLookup extends ItemDetailsLookup {
+
+        private final RecyclerView mRecyclerView;
+
+        public EventDetailsLookup(RecyclerView recyclerView) {
+            mRecyclerView = recyclerView;
+        }
+
+        public ItemDetails getItemDetails(MotionEvent e) {
+            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+            if (view != null) {
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(view);
+                if (holder instanceof EventViewHolder) {
+                    return ((EventViewHolder) holder).getDetails();
+                }
+            }
+            return null;
         }
     }
 
@@ -48,12 +109,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         mContext = context;
     }
 
+    public void setSelectionTracker(SelectionTracker selectionTracker) {
+        this.selectionTracker = selectionTracker;
+    }
+
     @NonNull
     @Override
     public EventAdapter.EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)  {
         View itemView = mInflater.inflate(R.layout.event_item, parent, false);
         return new EventViewHolder(itemView);
-
     }
 
     @Override
@@ -80,12 +144,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             c.setTimeInMillis(endT);
 
             holder.end.setText(df.format(c.getTime()));
+            holder.id=getItemId(position);
+            holder.position=position;
+
+            holder.itemView.setActivated(selectionTracker.isSelected(getItemId(position)));
+            holder.itemView.setBackgroundColor(selectionTracker.isSelected(getItemId(position)) ? Color.GREEN : Color.TRANSPARENT);
+
+            this.stringEvent = holder.title.getText().toString() + ", " + holder.begin.getText().toString() + ", " + holder.end.getText().toString();
         }
     }
 
     private static String[] PROJECTION = new String[] {CalendarContract.Events._ID, CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
-
 
 
     public void readEvents(long time) {
@@ -101,18 +171,28 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             long end = c.getTimeInMillis();
             // first arg end
             // second args begin
-            String select = CalendarContract.Events.DTSTART+"<="+end+" AND "+begin+"<"+CalendarContract.Events.DTEND;
+            String select = CalendarContract.Events.DTSTART+"<"+end+" AND "+begin+"<"+CalendarContract.Events.DTEND;
             data = cr.query(CalendarContract.Events.CONTENT_URI, PROJECTION, select, null, null);
+
+            selectionTracker.clearSelection();
             this.notifyDataSetChanged();
         }
     }
 
     public void readEvents(int year, int month, int dayOfMonth) {
-
         Calendar c = Calendar.getInstance();
-        c.set(year,month,dayOfMonth);
+        c.set(year,month,dayOfMonth,0,0);
         readEvents(c.getTimeInMillis());
+    }
 
+    public String getStringEvent(){
+        return this.stringEvent;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        data.moveToPosition(position);
+        return data.getLong(data.getColumnIndex(CalendarContract.Events._ID));
     }
 
     @Override

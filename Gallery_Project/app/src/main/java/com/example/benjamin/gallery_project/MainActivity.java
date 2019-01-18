@@ -2,11 +2,12 @@ package com.example.benjamin.gallery_project;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,11 +20,19 @@ import com.example.benjamin.gallery_project.Database.Image;
 import com.example.benjamin.gallery_project.ViewModels.ImageListAdapter;
 import com.example.benjamin.gallery_project.ViewModels.ImageViewModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageViewModel mImageViewModel;
+    private Uri imageURIResult = null;
+    private ArrayList<String> contactsResult = new ArrayList<String>() {};
+    private String eventResult = "";
+    private ArrayList<String> placeResult = new ArrayList<String>() {};
+    private ArrayList<String> elementsResult = new ArrayList<String>() {};
+    //private String imageStringResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, UploadImageActivity.class);
+
                 startActivityForResult(intent, UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
@@ -60,13 +70,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Image image = new Image(data.getData(), null);
-            mImageViewModel.insert(image);
+        if (requestCode == UPLOAD_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
 
-            // TODO change data.getData() and gather the other stuff
+            imageURIResult = Uri.parse(data.getStringExtra("uploadedImageURI"));
+            contactsResult.addAll(data.getStringArrayListExtra("taggedContacts"));
+            eventResult = data.getStringExtra("taggedEvent");
+            placeResult.addAll(data.getStringArrayListExtra("taggedPlaces"));
+            elementsResult.addAll(data.getStringArrayListExtra("taggedElements"));
+
+            Image image = new Image(imageURIResult, contactsResult, eventResult, placeResult, elementsResult);
+            mImageViewModel.insert(image);
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,5 +104,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public ArrayList<String> putStringToArrayList(String stringlist, String splitter){
+        String[] array = stringlist.split(splitter);
+        ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(array));
+        return arrayList;
     }
 }

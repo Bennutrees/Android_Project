@@ -15,9 +15,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
-@Database(entities = {Image.class}, version = 1, exportSchema = false)
+@Database(entities = {Image.class}, version = 2, exportSchema = false)
 @TypeConverters({ImageRoomDatabase.Converters.class})
 public abstract class ImageRoomDatabase extends RoomDatabase {
 
@@ -31,7 +32,8 @@ public abstract class ImageRoomDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             ImageRoomDatabase.class, "image_database")
-                            //.addCallback(sRoomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
+                            .addCallback(sRoomDatabaseCallback)
                             .build();
                 }
             }
@@ -43,22 +45,19 @@ public abstract class ImageRoomDatabase extends RoomDatabase {
     public static class Converters {
         @TypeConverter
         public static Uri uriFromString(String value) {
-            Type type = new TypeToken<List<Uri>>() {}.getType();
-            return new Gson().fromJson(value, type);
+            return Uri.parse(value);
         }
         @TypeConverter
         public static String fromUri(Uri uri) {
-            Gson gson = new Gson();
-            String json = gson.toJson(uri);
-            return json;
+            return uri.toString();
         }
         @TypeConverter
-        public static String[] arrayFromString(String value) {
-            Type type = new TypeToken<List<String[]>>() {}.getType();
+        public static ArrayList<String> arrayFromString(String value) {
+            Type type = new TypeToken<ArrayList<String>>() {}.getType();
             return new Gson().fromJson(value, type);
         }
         @TypeConverter
-        public static String fromStringArray(String[] stringArray) {
+        public static String fromStringArray(ArrayList<String> stringArray) {
             Gson gson = new Gson();
             String json = gson.toJson(stringArray);
             return json;

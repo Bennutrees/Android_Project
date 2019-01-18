@@ -6,7 +6,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -15,38 +14,30 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectContactsActivity extends AppCompatActivity implements View.OnClickListener {
+import static com.example.benjamin.gallery_project.UploadImageActivity.EXTRA_REPLY;
 
-    private Button save, cancel;
+public class SelectContactsActivity extends AppCompatActivity {
+
+    private Button save;
     private ListView listContact;
     private TextView nomContact;
     private ArrayList<String> taggedContacts;
-    private String taggedContactsToString;
     private String itemContact;
-    private Uri URI;
-    private ImageView imageView;
 
-    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contacts);
 
-        imageView = findViewById(R.id.imageView);
-        Bundle extras = getIntent().getExtras();
-        URI = Uri.parse(extras.getString("IMAGE_URI"));
-        imageView.setImageURI(URI);
-
-        taggedContacts = null;
-        taggedContactsToString = "";
+        taggedContacts = getIntent().getStringArrayListExtra("taggedContacts");
         nomContact = findViewById(R.id.nomContact);
 
         listContact = findViewById(R.id.listContact);
@@ -56,7 +47,7 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
                 view.setSelected(true);
                 itemContact = listContact.getItemAtPosition(position).toString();
                 if (itemContact != null) {
-                    if (taggedContacts == null) { taggedContacts = new ArrayList<String>(); }
+                    //if (taggedContacts == null) { taggedContacts = new ArrayList<String>(); }
 
                     Boolean contactAlreadyTagged = false;
                     for (String contact : taggedContacts) {
@@ -64,9 +55,10 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
                     }
                     if (contactAlreadyTagged == false) {
                         taggedContacts.add(itemContact);
-                        taggedContactsToString += itemContact + ", ";
+                    } else {
+                        taggedContacts.remove(itemContact);
                     }
-                    nomContact.setText(taggedContactsToString);
+                    nomContact.setText(taggedContacts.toString());
                 }
             }
         });
@@ -75,17 +67,13 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO give Arraylist<String> to UploadImageActivity
-
-                finish();
-            }
-        });
-
-        cancel = findViewById(R.id.cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                Intent replyIntent = new Intent();
+                if (taggedContacts.isEmpty()) {
+                    setResult(RESULT_CANCELED, replyIntent);
+                } else {
+                    replyIntent.putStringArrayListExtra(EXTRA_REPLY, taggedContacts);
+                    setResult(RESULT_OK, replyIntent);
+                }
                 finish();
             }
         });
@@ -107,8 +95,7 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
@@ -135,16 +122,10 @@ public class SelectContactsActivity extends AppCompatActivity implements View.On
                 contacts.add(name);
             } while (cursor.moveToNext());
         }
-        // Close the curosor
+        // Close the cursor
         cursor.close();
 
         return contacts;
-    }
-
-    @Override
-    public void onClick(View view) {
-        Intent i = new Intent(SelectContactsActivity.this, MainActivity.class);
-        startActivity(i);
     }
 }
 

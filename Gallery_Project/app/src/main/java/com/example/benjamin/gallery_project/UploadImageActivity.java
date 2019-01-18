@@ -1,6 +1,7 @@
 package com.example.benjamin.gallery_project;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -10,17 +11,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class UploadImageActivity extends AppCompatActivity {
 
     private ImageView uploadedImage;
     private Button uploadButton, takePicButton;
-    private TextView contactTags, eventTag, placeTags, elementTags;
+    private TextView contactTags, eventTag, placeTags, elementsTags;
     private Button contactsButton, eventButton, placeButton, elementsButton;
-    private Button saveButton, cancelButton;
+    private Button save_cancelButton;
     private static final int REQUEST_LOAD_IMAGE = 1;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_LOAD_CONTACT = 1;
-    private Uri IMAGE_URI;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
+    private static Uri imageURIResult;
+    private boolean isImageLoaded;
+    private static final int REQUEST_LOAD_CONTACT = 3;
+    private static ArrayList<String> contactsResult = new ArrayList<String>() {};
+    private static final int REQUEST_LOAD_EVENT = 4;
+    private static String eventResult = "";
+    private static final int REQUEST_LOAD_PLACE = 5;
+    private static ArrayList<String> placeResult = new ArrayList<String>() {};
+    private static final int REQUEST_LOAD_ELEMENTS = 6;
+    private static ArrayList<String> elementsResult = new ArrayList<String>() {};
+
+    public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +43,7 @@ public class UploadImageActivity extends AppCompatActivity {
         // Either upload or take a photo
         uploadedImage = findViewById(R.id.uploaded_image);
         uploadedImage.setVisibility(View.GONE);
+        isImageLoaded = false;
 
         uploadButton = findViewById(R.id.upload_button);
         uploadButton.setOnClickListener(new View.OnClickListener() {
@@ -61,10 +75,8 @@ public class UploadImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent contactsIntent = new Intent(UploadImageActivity.this, SelectContactsActivity.class);
-                contactsIntent.putExtra("IMAGE_URI", IMAGE_URI.toString());
+                contactsIntent.putStringArrayListExtra("taggedContacts", contactsResult);
                 startActivityForResult(contactsIntent, REQUEST_LOAD_CONTACT);
-
-                // TODO get the ArrayList<String> of contacts
             }
         });
 
@@ -78,10 +90,8 @@ public class UploadImageActivity extends AppCompatActivity {
         eventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(UploadImageActivity.this, SelectEventActivity.class);
-                startActivity(i);
-                // TODO link SelectEventActivity
-
+                Intent eventIntent = new Intent(UploadImageActivity.this, SelectEventActivity.class);
+                startActivityForResult(eventIntent, REQUEST_LOAD_EVENT);
             }
         });
 
@@ -95,46 +105,48 @@ public class UploadImageActivity extends AppCompatActivity {
         placeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO write place tags
-
+                Intent writePlaceIntent = new Intent(UploadImageActivity.this, WriteTagActivity.class);
+                writePlaceIntent.putStringArrayListExtra("tagList", placeResult);
+                startActivityForResult(writePlaceIntent, REQUEST_LOAD_PLACE);
             }
         });
 
 
         // Add elements tags
-        elementTags = findViewById(R.id.element_tags);
-        elementTags.setVisibility(View.GONE);
+        elementsTags = findViewById(R.id.element_tags);
+        elementsTags.setVisibility(View.GONE);
 
         elementsButton = findViewById(R.id.elements_button);
         elementsButton.setVisibility(View.GONE);
         elementsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO write elements tags
-
+                Intent writeElementsIntent = new Intent(UploadImageActivity.this, WriteTagActivity.class);
+                writeElementsIntent.putStringArrayListExtra("tagList", elementsResult);
+                startActivityForResult(writeElementsIntent, REQUEST_LOAD_ELEMENTS);
             }
         });
 
 
         // Save data and terminate the activity
-        saveButton = findViewById(R.id.save_upload_button);
-        saveButton.setVisibility(View.GONE);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        save_cancelButton = findViewById(R.id.save_upload_button);
+        save_cancelButton.setText("Cancel");
+        save_cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (IMAGE_URI != null) {
-                    setResult(RESULT_OK);
-                    finish();
+                Intent replyIntent = new Intent();
+                if (!isImageLoaded) {
+                    setResult(RESULT_CANCELED,replyIntent);
+                } else {
+                    Bundle extras = new Bundle();
+                    extras.putString("uploadedImageURI",imageURIResult.toString());
+                    extras.putStringArrayList("taggedContacts", contactsResult);
+                    extras.putString("taggedEvent", eventResult);
+                    extras.putStringArrayList("taggedPlaces", placeResult);
+                    extras.putStringArrayList("taggedElements", elementsResult);
+                    replyIntent.putExtras(extras);
+                    setResult(RESULT_OK,replyIntent);
                 }
-            }
-        });
-
-        cancelButton = findViewById(R.id.cancel_upload_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 finish();
             }
         });
@@ -143,19 +155,46 @@ public class UploadImageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
-        if((requestCode == REQUEST_LOAD_IMAGE | requestCode == REQUEST_IMAGE_CAPTURE)
-                && resultCode == RESULT_OK && data != null){
-            Uri selectedImage = data.getData();
-            IMAGE_URI = selectedImage;
-            uploadedImage.setImageURI(selectedImage);
-            setNewVisibility();
+        if (requestCode == REQUEST_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            this.setNewUri(data.getData());
+            this.uploadedImage.setImageURI(data.getData());
+            this.setNewVisibility();
+            this.isImageLoaded = true;
         }
-        if(requestCode == REQUEST_LOAD_CONTACT && resultCode == RESULT_OK && data != null){
-
-            // TODO set textview
-
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
+            Bundle extras = data.getExtras();
+            this.setNewUri(data.getData());
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            this.uploadedImage.setImageBitmap(imageBitmap);
+            this.setNewVisibility();
+            this.isImageLoaded = true;
         }
+        if (requestCode == REQUEST_LOAD_CONTACT && resultCode == RESULT_OK && data != null) {
+            ArrayList<String> contactsArray = data.getStringArrayListExtra(EXTRA_REPLY);
+            this.contactsResult.addAll(contactsArray);
+            String contacts = contactsArray.toString();
+            contactTags.setText(contacts);
+        }
+        if (requestCode == REQUEST_LOAD_EVENT && resultCode == RESULT_OK && data != null) {
+            String event = data.getStringExtra(EXTRA_REPLY);
+            eventTag.setText(event);
+        }
+        if (requestCode == REQUEST_LOAD_PLACE && resultCode == RESULT_OK && data != null) {
+            ArrayList<String> placesArray = data.getStringArrayListExtra(EXTRA_REPLY);
+            this.placeResult.addAll(placesArray);
+            String places = placesArray.toString();
+            placeTags.setText(places);
+        }
+        if (requestCode == REQUEST_LOAD_ELEMENTS && resultCode == RESULT_OK && data != null) {
+            ArrayList<String> elementsArray = data.getStringArrayListExtra(EXTRA_REPLY);
+            this.elementsResult.addAll(elementsArray);
+            String contacts = elementsArray.toString();
+            elementsTags.setText(contacts);
+        }
+    }
+
+    private void setNewUri(Uri newUri) {
+        this.imageURIResult = newUri;
     }
 
     private void setNewVisibility() {
@@ -169,9 +208,28 @@ public class UploadImageActivity extends AppCompatActivity {
         eventButton.setVisibility(View.VISIBLE);
         placeTags.setVisibility(View.VISIBLE);
         placeButton.setVisibility(View.VISIBLE);
-        elementTags.setVisibility(View.VISIBLE);
+        elementsTags.setVisibility(View.VISIBLE);
         elementsButton.setVisibility(View.VISIBLE);
-        saveButton.setVisibility(View.VISIBLE);
-        //layout_constraintHorizontal_bias="0.703"
+        save_cancelButton.setVisibility(View.VISIBLE);
+        save_cancelButton.setText("Save");
     }
+
+    /*String everyDataString = "";
+    everyDataString += imageURIResult.toString() + ";";
+    everyDataString += putArrayToString(contactsResult) + ";";
+    everyDataString += eventResult + ";";
+    everyDataString += putArrayToString(placeResult) + ";";
+    everyDataString += putArrayToString(elementsResult) + ";";
+    replyIntent.putExtra("imageResult", everyDataString);
+
+    public String putArrayToString(ArrayList<String> arrayList) {
+        String dataString = "";
+        int i = 1;
+        for (String element : arrayList) {
+            dataString += element;
+            if (i < arrayList.size()) dataString += ",";
+            i += 1;
+        }
+        return dataString;
+    }*/
 }
